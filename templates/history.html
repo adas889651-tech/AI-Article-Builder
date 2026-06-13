@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Article History — AI Article Builder{% endblock %}
+{% block page_title %}Article History{% endblock %}
+
+{% block content %}
+
+<!-- Search bar -->
+<form method="GET" action="{{ url_for('articles.history') }}" class="search-bar">
+  <input type="text" name="q" class="form-control"
+         placeholder="Search by title, category or keyword…"
+         value="{{ search }}" />
+  <button type="submit" class="btn btn-primary">Search</button>
+  {% if search %}
+  <a href="{{ url_for('articles.history') }}" class="btn btn-secondary">Clear</a>
+  {% endif %}
+</form>
+
+{% if articles %}
+<div class="article-grid">
+  {% for art in articles %}
+  <div class="article-card">
+    <div class="article-card-title">{{ art.title }}</div>
+    <div class="article-card-meta">
+      <span class="badge">{{ art.category }}</span>
+      <span>{{ art.language.capitalize() }}</span>
+      <span>{{ art.length.capitalize() }}</span>
+    </div>
+    {% if art.meta_description %}
+    <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;">
+      {{ art.meta_description[:120] }}{% if art.meta_description|length > 120 %}…{% endif %}
+    </p>
+    {% endif %}
+    <div style="font-size:0.75rem;color:var(--text-muted);">
+      {{ art.created_at.strftime('%d %b %Y, %H:%M') }}
+    </div>
+    <div class="article-card-actions">
+      <a href="{{ url_for('articles.view_article', art_id=art.id) }}" class="btn btn-secondary btn-sm">View</a>
+      <a href="{{ url_for('articles.edit_article', art_id=art.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+      <form method="POST" action="{{ url_for('articles.delete_article_route', art_id=art.id) }}"
+            style="margin:0;" onsubmit="return confirm('Delete this article?');">
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="icon">🗂️</div>
+  <h3>{% if search %}No results for "{{ search }}"{% else %}No articles yet{% endif %}</h3>
+  <p>{% if search %}Try a different search term.{% else %}Generate your first article to see it here.{% endif %}</p>
+  <a href="{{ url_for('articles.generate') }}" class="btn btn-primary">Generate Article</a>
+</div>
+{% endif %}
+
+{% endblock %}

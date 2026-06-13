@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Register — AI Article Builder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+</head>
+<body>
+
+<div class="flash-container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">
+        <span>{{ message }}</span>
+        <button class="flash-close" onclick="this.parentElement.remove()">✕</button>
+      </div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="logo-mark">AI</div>
+      <h1>Create Account</h1>
+      <p>Join AI Article Builder today</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.register') }}" novalidate id="registerForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" class="form-control"
+               placeholder="yourname" required minlength="3" autocomplete="username"/>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" class="form-control"
+               placeholder="you@example.com" required autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control"
+               placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password"/>
+      </div>
+      <div class="form-group">
+        <label for="confirm_password">Confirm Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" class="form-control"
+               placeholder="Repeat password" required autocomplete="new-password"/>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top:0.5rem;">
+        Create Account
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:0.88rem;color:var(--text-muted);">
+      Already have an account?
+      <a href="{{ url_for('auth.login') }}">Sign in</a>
+    </p>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+  // Client-side password match check
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const p1 = document.getElementById('password').value;
+    const p2 = document.getElementById('confirm_password').value;
+    if (p1 !== p2) {
+      e.preventDefault();
+      alert('Passwords do not match.');
+    }
+  });
+</script>
+</body>
+</html>

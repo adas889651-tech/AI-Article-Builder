@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Generate Article — AI Article Builder{% endblock %}
+{% block page_title %}Generate Article{% endblock %}
+
+{% block content %}
+<div class="generate-layout">
+
+  <!-- Left: Form panel -->
+  <div class="gen-panel">
+    <div class="gen-panel-title">✍️ Article Settings</div>
+
+    <div class="form-group">
+      <label for="art-title">Article Title *</label>
+      <input type="text" id="art-title" class="form-control" placeholder="e.g. 10 Benefits of Morning Exercise" />
+    </div>
+
+    <div class="form-group">
+      <label for="art-keywords">Keywords</label>
+      <input type="text" id="art-keywords" class="form-control" placeholder="fitness, health, workout, morning routine" />
+    </div>
+
+    <div class="form-group">
+      <label for="art-category">Category</label>
+      <select id="art-category" class="form-control">
+        {% for cat in categories %}
+        <option value="{{ cat }}">{{ cat }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Article Length</label>
+      <div class="length-options">
+        <div class="length-option">
+          <input type="radio" name="art-length" id="len-short" value="short"/>
+          <label for="len-short">Short<br><small>~300w</small></label>
+        </div>
+        <div class="length-option">
+          <input type="radio" name="art-length" id="len-medium" value="medium" checked/>
+          <label for="len-medium">Medium<br><small>~600w</small></label>
+        </div>
+        <div class="length-option">
+          <input type="radio" name="art-length" id="len-long" value="long"/>
+          <label for="len-long">Long<br><small>~1200w</small></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="art-language">Language</label>
+      <select id="art-language" class="form-control">
+        <option value="english">🇬🇧 English</option>
+        <option value="hindi">🇮🇳 Hindi</option>
+        <option value="odia">🏛️ Odia</option>
+      </select>
+    </div>
+
+    <button id="generateBtn" class="btn btn-primary btn-full" style="margin-top:0.75rem;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Generate Article
+    </button>
+  </div>
+
+  <!-- Right: Output panel -->
+  <div class="article-output" style="position:relative;" id="outputPanel">
+
+    <!-- Loading overlay (hidden by default) -->
+    <div class="loader-overlay" id="loaderOverlay" style="display:none;">
+      <div class="spinner"></div>
+      <div class="loader-text" id="loaderText">Generating your article…</div>
+    </div>
+
+    <div class="output-toolbar" id="outputToolbar" style="display:none;">
+      <span class="output-toolbar-title">Generated Article</span>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-sm" id="copyBtn">📋 Copy</button>
+        <button class="btn btn-secondary btn-sm" id="pdfBtn">⬇️ PDF</button>
+        <a id="editBtn" href="#" class="btn btn-primary btn-sm" style="display:none;">✏️ Edit</a>
+      </div>
+    </div>
+
+    <div class="output-body" id="outputBody">
+      <div class="output-placeholder">
+        <div class="icon">🤖</div>
+        <p>Fill in the form and click <strong>Generate Article</strong> to create your SEO-optimised content.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/generate.js') }}"></script>
+{% endblock %}

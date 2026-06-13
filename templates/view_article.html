@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }} — AI Article Builder{% endblock %}
+{% block page_title %}View Article{% endblock %}
+
+{% block content %}
+<div class="article-view">
+
+  <!-- Actions bar -->
+  <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+    <a href="{{ url_for('articles.history') }}" class="btn btn-secondary btn-sm">← Back</a>
+    <a href="{{ url_for('articles.edit_article', art_id=article.id) }}" class="btn btn-primary btn-sm">✏️ Edit</a>
+    <button class="btn btn-secondary btn-sm" id="copyBtn">📋 Copy</button>
+    <button class="btn btn-secondary btn-sm" id="pdfBtn">⬇️ PDF</button>
+    <form method="POST" action="{{ url_for('articles.delete_article_route', art_id=article.id) }}"
+          style="margin:0;" onsubmit="return confirm('Delete this article?');">
+      <button type="submit" class="btn btn-danger btn-sm">🗑️ Delete</button>
+    </form>
+  </div>
+
+  <!-- Header -->
+  <div class="article-view-header">
+    <h1>{{ article.title }}</h1>
+    <div class="article-meta-row">
+      <span class="badge">{{ article.category }}</span>
+      <span class="badge badge-muted">{{ article.language.capitalize() }}</span>
+      <span class="badge badge-muted">{{ article.length.capitalize() }}</span>
+      <span style="font-size:0.8rem;color:var(--text-muted);">
+        {{ article.created_at.strftime('%d %B %Y') }}
+      </span>
+    </div>
+  </div>
+
+  <!-- SEO box -->
+  {% if article.meta_description %}
+  <div class="seo-box">
+    <div class="seo-label">Meta Description</div>
+    <p>{{ article.meta_description }}</p>
+  </div>
+  {% endif %}
+
+  {% if article.seo_keywords %}
+  <div class="seo-box" style="margin-bottom:1.75rem;">
+    <div class="seo-label">SEO Keywords</div>
+    <p>{{ article.seo_keywords }}</p>
+  </div>
+  {% endif %}
+
+  <!-- Article body -->
+  <div class="article-body" id="articleContent">
+    {{ article.content | safe }}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Copy article
+  document.getElementById('copyBtn').addEventListener('click', function() {
+    const text = document.getElementById('articleContent').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      this.textContent = '✅ Copied!';
+      setTimeout(() => this.textContent = '📋 Copy', 2000);
+    });
+  });
+
+  // PDF download
+  document.getElementById('pdfBtn').addEventListener('click', function() {
+    window.print();
+  });
+</script>
+<style>
+  @media print {
+    .sidebar, .topbar, .article-view > div:first-child, .seo-box { display: none !important; }
+    .main-content { margin-left: 0 !important; }
+    .page-content { padding: 0 !important; }
+  }
+</style>
+{% endblock %}
